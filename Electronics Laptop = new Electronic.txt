@@ -1,0 +1,11 @@
+ /*Electronics Laptop = new Electronics("dell",3,"w113","Laptop",10,100);
+        System.out.println(Laptop);
+
+        Clothing Denim = new Clothing("XL","Navy blue" , "w110","Denim",4,34.99);
+        System.out.println(Denim);
+
+        shoppingManager.addProduct(Laptop);
+        shoppingManager.addProduct(Denim);
+
+        shoppingManager.displayProducts();
+        shoppingManager.calculateTotal(); */
