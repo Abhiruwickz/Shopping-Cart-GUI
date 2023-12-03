@@ -9,6 +9,9 @@ public class Electronics extends Product {
 
     }
 
+    public Electronics(String productId, String productName, int availableItems, double price, int warrantyPeriod) {
+    }
+
 
     public String getBrand() {
         return Brand;
