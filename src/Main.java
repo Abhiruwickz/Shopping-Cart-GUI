@@ -1,3 +1,4 @@
+import java.nio.file.WatchEvent;
 import java.util.*;
 
 public class Main {
@@ -7,8 +8,11 @@ public class Main {
 
         while (true) {
             System.out.println("1. Add Product");
-            System.out.println("2. Display Products");
-            System.out.println("3. Exit");
+            System.out.println("2. Remove Product");
+            System.out.println("3. Display Products");
+            System.out.println("4. Saved to File");
+            System.out.println("5. Load From the File");
+            System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = Input.nextInt();
@@ -22,8 +26,18 @@ public class Main {
                     shoppingManager.displayProducts();
                     break;
                 case 3:
+                    System.out.println("Remove Products");
+                case 4:
+                    System.out.println("Products Saved to the file !");
+                    shoppingManager.SavedToFile();
+                case 5:
+                    System.out.println("Load Products FRom the File !");
+                    shoppingManager.loadFromFile();
+                case 6:
                     System.out.println("Exiting the application.");
                     System.exit(0);
+                case 7:
+                    System.out.println("Display Gui");
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
@@ -59,7 +73,10 @@ public class Main {
             shoppingManager.addProduct(new Clothing(productId, productName, availableItems, price, size));
         } else {
             System.out.println("Invalid product type choice.");
+
         }
+        System.out.println("Total of the products : " + shoppingManager.calculateTotal());
+
     }
 }
 
