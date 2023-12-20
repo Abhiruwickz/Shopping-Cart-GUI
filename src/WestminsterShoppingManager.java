@@ -107,37 +107,48 @@ public class WestminsterShoppingManager {
         while ((line = reader.readLine()) != null) {
             String[] parts = line.split(",");
             if (parts.length >= 4) {
-                String productId = parts[0];
-                String productName = parts[1];
+                String ProductId = parts[0];
+                String ProductName = parts[1];
 
                 try {
-                    int availableItems = Integer.parseInt(parts[2]);
-                    double price = Double.parseDouble(parts[3]);
+                    int availableItems = Integer.parseInt(parts[2].trim());
+                    double price = Double.parseDouble(parts[3].trim());
 
                     if (parts.length >= 5) {
-                        String additionalAttribute = parts[4];
+                        String additionalAttribute = parts[4].trim();
 
-                        if (additionalAttribute.equals("Electronics") && parts.length >= 6) {
-                            int warrantyPeriod = Integer.parseInt(parts[5]);
-                            products.add(new Electronics(productId, productName, availableItems, price, warrantyPeriod));
-                        } else if (additionalAttribute.equals("Clothing") && parts.length >= 6) {
-                            String size = parts[5];
-                            products.add(new Clothing(productId, productName, availableItems, price, size));
+                        if ("Electronics".equals(additionalAttribute) && parts.length >= 6) {
+                            try {
+                                int warranty = Integer.parseInt(parts[5].trim());
+                                products.add(new Electronics(ProductId, ProductName, availableItems, price, warranty));
+                            } catch (NumberFormatException e) {
+                                System.out.println("Error parsing warranty period in line: " + line + ". " + e.getMessage());
+                            }
+                        } else if ("Clothing".equals(additionalAttribute) && parts.length >= 6) {
+                            String Size = parts[5].trim();
+                            products.add(new Clothing(ProductId, ProductName, availableItems, price, Size));
                         } else {
-                            // Handle unknown product type
+                            // Handle unknown product type or missing attributes
+                            System.out.println("Unknown product type or missing attributes in line: " + line);
                         }
                     } else {
                         // Handle case when additional attributes are missing
+                        System.out.println("Additional attributes missing for product ID: " + ProductId);
                     }
                 } catch (NumberFormatException e) {
                     // Handle the case when parsing of availableItems or price fails
-                    System.out.println("Error parsing availableItems or price: " + e.getMessage());
+                    System.out.println("Error parsing availableItems or price in line: " + line + ". " + e.getMessage());
                 }
+            } else {
+                // Handle case when basic product information is missing
+                System.out.println("Basic product information missing in line: " + line);
             }
         }
 
         return products;
     }
+
+
 
 
 }

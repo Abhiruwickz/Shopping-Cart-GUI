@@ -9,12 +9,12 @@ public class Electronics extends Product {
 
     }
 
-   public Electronics(String ProductId, String productName, int Items, double price, int warranty) {
+   public Electronics(String ProductId, String ProductName, int Items, double price, int warranty) {
         this.ProductID = ProductId;
         this.price = price;
         this.Items = Items;
         this.warranty = warranty;
-        this.ProductName = productName;
+        this.ProductName = ProductName;
    }
 
 
