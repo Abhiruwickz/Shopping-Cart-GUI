@@ -8,7 +8,12 @@ public class Clothing extends Product {
         this.Color= color;
     }
 
-    public Clothing(String productId, String productName, int availableItems, double price, String size) {
+    public Clothing(String productId, String productName, int Items, double price, String Size) {
+        this.ProductID = productId;
+        this.ProductName = productName;
+        this.price = price;
+        this.Size = Size;
+        this.Items = Items;
     }
 
     public String getSize() {

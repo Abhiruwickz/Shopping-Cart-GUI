@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class WestminsterShoppingManager {
 
@@ -21,20 +18,24 @@ public class WestminsterShoppingManager {
             System.out.println("Cannot add more products. Maximum is reached");
         }
     }
-    public void removeProduct (String productId){
+    public boolean removeProduct (String productId){
         Product removedProduct = null;
         for (Product product : productList){
-            if (product.getProductID().equals(productId)){
+            if (Objects.equals(product.getProductID(), productId)){
                 removedProduct = product;
                 break;
             }
         }
-        if (removedProduct != null){
+        if (removedProduct != null) {
             productList.remove(removedProduct);
-            System.out.println("Product deleted : " + removedProduct.getProductID());
-            //saveProductsToFile();
+            System.out.println("Product deleted: " + removedProduct.getProductID());
+            return true; // Product found and removed successfully
+        } else {
+            System.out.println("Product with ID " + productId + " not found!");
+            return false; // Product not found
         }
     }
+
 
 
 
@@ -57,26 +58,27 @@ public class WestminsterShoppingManager {
                 System.out.println("Product Type : Clothing");
             }
             System.out.println(
-                    "Product ID : " + product.getProductID() +
-                    "Items : " + product.getItems() +
+                    "Product ID : " + product.getProductID() + " " +
+                    "Items : " + product.getItems() + " " +
                     "Price : " + product.getPrice());
 
         }
+        SavedToFile();
 
     }
     public void SavedToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("saveProducts.txt"))) {
             for (Product product : productList) {
-                writer.write(product.getProductID() + ",");
+                writer.write(product.getProductID() + "-");
                 writer.write(product.getProductName() + ",");
                 writer.write(product.getPrice() + ",");
                 writer.write(product.getItems() + ",");
 
                 if (product instanceof Electronics) {
-                    writer.write("," + ((Electronics) product) .getWarranty());
+                    writer.write("Electronics," + ((Electronics) product) .getWarranty());
 
                 } else if (product instanceof Clothing) {
-                    writer.write("," + ((Clothing ) product) .getSize());
+                    writer.write("Clothing," + ((Clothing ) product) .getSize());
 
                 }
                 writer.newLine();
@@ -107,29 +109,37 @@ public class WestminsterShoppingManager {
             if (parts.length >= 4) {
                 String productId = parts[0];
                 String productName = parts[1];
-                int availableItems = Integer.parseInt(parts[2]);
-                double price = Double.parseDouble(parts[3]);
 
-                if (parts.length >= 5) {
-                    // Additional attributes for Electronics or Clothing
-                    String additionalAttribute = parts[4];
+                try {
+                    int availableItems = Integer.parseInt(parts[2]);
+                    double price = Double.parseDouble(parts[3]);
 
-                    if (additionalAttribute.equals("Electronics")) {
-                        int warrantyPeriod = Integer.parseInt(parts[5]);
-                        products.add(new Electronics(productId, productName, availableItems, price, warrantyPeriod));
-                    } else if (additionalAttribute.equals("Clothing")) {
-                        String size = parts[5];
-                        products.add(new Clothing(productId, productName, availableItems, price, size));
+                    if (parts.length >= 5) {
+                        String additionalAttribute = parts[4];
+
+                        if (additionalAttribute.equals("Electronics") && parts.length >= 6) {
+                            int warrantyPeriod = Integer.parseInt(parts[5]);
+                            products.add(new Electronics(productId, productName, availableItems, price, warrantyPeriod));
+                        } else if (additionalAttribute.equals("Clothing") && parts.length >= 6) {
+                            String size = parts[5];
+                            products.add(new Clothing(productId, productName, availableItems, price, size));
+                        } else {
+                            // Handle unknown product type
+                        }
                     } else {
-                        // Handle unknown product type
+                        // Handle case when additional attributes are missing
                     }
-
+                } catch (NumberFormatException e) {
+                    // Handle the case when parsing of availableItems or price fails
+                    System.out.println("Error parsing availableItems or price: " + e.getMessage());
                 }
             }
         }
 
         return products;
     }
+
+
 }
 
 
