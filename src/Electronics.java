@@ -6,17 +6,11 @@ public class Electronics extends Product {
         super(ProductId, ProductName, Items, price);
         this.Brand = Brand;
         this.warranty = warranty;
+        this.ProductID = ProductId;
+        this.Items = Items;
+        this.ProductName = ProductName;
 
     }
-
-   public Electronics(String ProductId, String ProductName, int Items, double price, int warranty) {
-        this.ProductID = ProductId;
-        this.price = price;
-        this.Items = Items;
-        this.warranty = warranty;
-        this.ProductName = ProductName;
-   }
-
 
 
     public String getBrand() {

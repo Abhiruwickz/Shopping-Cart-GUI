@@ -49,7 +49,7 @@ public class WestminsterShoppingManager {
     }
 
     public void displayProducts() {
-        Collections.sort(productList, Comparator.comparing(Product::getProductID));
+        productList.sort(Comparator.comparing(Product::getProductID));
         System.out.println("List of products in the system");
         for (Product product : productList) {
             if (product instanceof Electronics) {
@@ -108,10 +108,10 @@ public class WestminsterShoppingManager {
             String[] parts = line.split(",");
             if (parts.length >= 4) {
                 String ProductId = parts[0];
-                String ProductName = parts[1];
+                String productName = parts[1];
 
                 try {
-                    int availableItems = Integer.parseInt(parts[2].trim());
+                    int Items = Integer.parseInt(parts[2].trim());
                     double price = Double.parseDouble(parts[3].trim());
 
                     if (parts.length >= 5) {
@@ -119,14 +119,16 @@ public class WestminsterShoppingManager {
 
                         if ("Electronics".equals(additionalAttribute) && parts.length >= 6) {
                             try {
-                                int warranty = Integer.parseInt(parts[5].trim());
-                                products.add(new Electronics(ProductId, ProductName, availableItems, price, warranty));
+                                String Brand = parts[5];
+                                int warrantyPeriod = Integer.parseInt(parts[6].trim());
+                                products.add(new Electronics(Brand, warrantyPeriod, ProductId, productName,Items, price));
                             } catch (NumberFormatException e) {
                                 System.out.println("Error parsing warranty period in line: " + line + ". " + e.getMessage());
                             }
                         } else if ("Clothing".equals(additionalAttribute) && parts.length >= 6) {
+                            String color = parts[4].trim();
                             String Size = parts[5].trim();
-                            products.add(new Clothing(ProductId, ProductName, availableItems, price, Size));
+                            products.add(new Clothing(Size,color,ProductId ,productName,Items, price));
                         } else {
                             // Handle unknown product type or missing attributes
                             System.out.println("Unknown product type or missing attributes in line: " + line);
@@ -147,8 +149,6 @@ public class WestminsterShoppingManager {
 
         return products;
     }
-
-
 
 
 }

@@ -1,10 +1,10 @@
-import java.nio.file.WatchEvent;
 import java.util.*;
 
 public class Main {
     public static void main (String[] args){
         WestminsterShoppingManager shoppingManager = new WestminsterShoppingManager();
         Scanner scanner = new Scanner(System.in);
+        GUI gui = new GUI((List<Product>) shoppingManager);
 
         while (true) {
             System.out.println("1. Add Product");
@@ -12,7 +12,8 @@ public class Main {
             System.out.println("3. Display Products");
             System.out.println("4. Saved to File");
             System.out.println("5. Load From the File");
-            System.out.println("6. Exit");
+            System.out.println("6. Display GUI");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -21,9 +22,11 @@ public class Main {
             switch (choice) {
                 case 1:
                     addProduct(shoppingManager, scanner);
+                    gui.updateProductTable();
                     break;
                 case 2:
                     removeProduct(shoppingManager,scanner);
+                    gui.updateProductTable();
                     break;
                 case 3:
                     shoppingManager.displayProducts();
@@ -35,13 +38,14 @@ public class Main {
                 case 5:
                     shoppingManager.loadFromFile();
                     System.out.println("Load Products From the File !");
+                    gui.updateProductTable();
                     break;
                 case 6:
-                    System.out.println("Exiting the application.");
-                    System.exit(0);
+                    gui.setVisible(true);
                     break;
                 case 7:
-                    System.out.println("Display Gui");
+                    System.out.println("Exiting the application.");
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
@@ -70,13 +74,17 @@ public class Main {
         scanner.nextLine(); // Consume the newline character
 
         if (productTypeChoice == 1) {
+            System.out.print("Enter the Brand : ");
+            String Brand = scanner.nextLine();
             System.out.print("Enter warranty period: ");
             int warrantyPeriod = scanner.nextInt();
-            shoppingManager.addProduct(new Electronics(ProductId, productName, Items, price, warrantyPeriod));
+            shoppingManager.addProduct(new Electronics(Brand, warrantyPeriod, ProductId, productName,Items, price));
         } else if (productTypeChoice == 2) {
+            System.out.print("Enter the color of the clothes: ");
+            String color = scanner.nextLine();
             System.out.print("Enter clothing size: ");
             String Size = scanner.nextLine();
-            shoppingManager.addProduct(new Clothing(ProductId, productName, Items, price, Size));
+            shoppingManager.addProduct(new Clothing(Size,color,ProductId ,productName,Items, price));
         } else {
             System.out.println("Invalid product type choice.");
 
