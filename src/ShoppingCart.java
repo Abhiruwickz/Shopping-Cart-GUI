@@ -3,11 +3,17 @@ import java.util.List;
 
 public class ShoppingCart {
 
-    public List <Product> products;
+    private List<Product> products;
+
+
 
     public ShoppingCart (){
         this.products = new ArrayList<>();
     }
+
+    public ShoppingCart(WestminsterShoppingManager shoppingManager, java.awt.List productList) {
+    }
+
     // Method to add a product to the shopping cart
     public void addProduct(Product product){
         this.products.add(product);
@@ -17,16 +23,24 @@ public class ShoppingCart {
         this.products.remove(product);
     }
     // Method to calculate the total price of products in the shopping cart
-    public double calculateTotal (double Price){
-        double Total = 0;
-        for (Product product : products){
-            Total += product.getPrice();
+     public double calculateTotal() {
+        double total = 0;
+        for (Product product : products) {
+            total += product.getPrice();
         }
-        return Total;
-
+        System.out.println("Total Price: " + total);
+        return total;
     }
 
     public List<Product> getProducts() {
         return products;
+    }
+
+
+
+    public void addObserver(GUI gui) {
+    }
+
+    public void removeObserver(GUI gui) {
     }
 }

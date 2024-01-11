@@ -1,13 +1,14 @@
 import java.io.*;
 import java.util.*;
 
-public class WestminsterShoppingManager {
+public class WestminsterShoppingManager extends ShoppingCart  {
 
     private final List <Product> productList;
 
     public WestminsterShoppingManager() {
         this.productList = new ArrayList<>();
     }
+
     public void addProduct(Product product){
         if (productList.size() < 50) {
             productList.add(product);
@@ -17,6 +18,7 @@ public class WestminsterShoppingManager {
         else {
             System.out.println("Cannot add more products. Maximum is reached");
         }
+
     }
     public boolean removeProduct (String productId){
         Product removedProduct = null;
@@ -26,11 +28,14 @@ public class WestminsterShoppingManager {
                 break;
             }
         }
+
+
         if (removedProduct != null) {
             productList.remove(removedProduct);
             System.out.println("Product deleted: " + removedProduct.getProductID());
             return true; // Product found and removed successfully
-        } else {
+        }
+        else {
             System.out.println("Product with ID " + productId + " not found!");
             return false; // Product not found
         }
@@ -39,14 +44,14 @@ public class WestminsterShoppingManager {
 
 
 
-    public double calculateTotal() {
+   /* public double calculateTotal() {
         double total = 0;
         for (Product product : productList) {
             total += product.getPrice();
         }
         System.out.println("Total Price: " + total);
         return total;
-    }
+    }*/
 
     public void displayProducts() {
         productList.sort(Comparator.comparing(Product::getProductID));
@@ -149,6 +154,7 @@ public class WestminsterShoppingManager {
 
         return products;
     }
+
 
 
 }

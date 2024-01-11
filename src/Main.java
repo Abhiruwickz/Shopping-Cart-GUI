@@ -4,7 +4,11 @@ public class Main {
     public static void main (String[] args){
         WestminsterShoppingManager shoppingManager = new WestminsterShoppingManager();
         Scanner scanner = new Scanner(System.in);
-        GUI gui = new GUI((List<Product>) shoppingManager);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        GUI gui = new GUI(shoppingCart);
+        shoppingCart.addObserver(gui);
+
+
 
         while (true) {
             System.out.println("1. Add Product");
@@ -21,12 +25,12 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    addProduct(shoppingManager, scanner);
-                    gui.updateProductTable();
+                    addProduct(shoppingManager,shoppingCart, scanner,gui);
+                    gui.updateTable();
                     break;
                 case 2:
                     removeProduct(shoppingManager,scanner);
-                    gui.updateProductTable();
+                    gui.updateTable();
                     break;
                 case 3:
                     shoppingManager.displayProducts();
@@ -38,10 +42,9 @@ public class Main {
                 case 5:
                     shoppingManager.loadFromFile();
                     System.out.println("Load Products From the File !");
-                    gui.updateProductTable();
                     break;
                 case 6:
-                    gui.setVisible(true);
+                    gui.showGUI();
                     break;
                 case 7:
                     System.out.println("Exiting the application.");
@@ -54,7 +57,7 @@ public class Main {
         }
     }
 
-    private static void addProduct(WestminsterShoppingManager shoppingManager, Scanner scanner) {
+    private static void addProduct(WestminsterShoppingManager shoppingManager, ShoppingCart shoppingCart, Scanner scanner, GUI gui) {
         System.out.println("Enter product details:");
         System.out.print("Product ID: ");
         String ProductId = scanner.nextLine();
@@ -89,8 +92,8 @@ public class Main {
             System.out.println("Invalid product type choice.");
 
         }
-        double totalPrice = shoppingManager.calculateTotal();
-        System.out.println("Total of the products : " + totalPrice);
+        shoppingCart.calculateTotal();
+        gui.updateTable();
 
     }
     private static void removeProduct (WestminsterShoppingManager shoppingManager, Scanner scanner){

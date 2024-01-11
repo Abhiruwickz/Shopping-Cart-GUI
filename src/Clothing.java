@@ -2,7 +2,7 @@ public class Clothing extends Product {
     public String Size;
     public String Color;
 
-    public Clothing (String Size,String color,String ProductId , String ProductName, int Items, double price ){
+    public Clothing (String Size, String color, String ProductId , String ProductName, int Items, double price ){
         super(ProductId, ProductName, Items, price);
         this.ProductID = ProductId;
         this.ProductName = ProductName;
