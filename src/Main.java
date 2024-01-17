@@ -1,118 +1,115 @@
 import java.util.*;
 
 public class Main {
-    public static void main (String[] args){
-        WestminsterShoppingManager shoppingManager = new WestminsterShoppingManager();
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args){
+
         ShoppingCart shoppingCart = new ShoppingCart();
-        GUI gui = new GUI(shoppingCart);
-        shoppingCart.addObserver(gui);
+        WestminsterShoppingManager shoppingManager = new WestminsterShoppingManager();
 
+        //GUI gui = new GUI();
 
+        List<Product>ProductList = new ArrayList<>();
 
-        while (true) {
-            System.out.println("1. Add Product");
-            System.out.println("2. Remove Product");
+        Scanner Input = new Scanner(System.in);
+
+        while (true){
+            System.out.println("\nMain Menu:");
+            System.out.println("1. Add a new product");
+            System.out.println("2. Delete a product");
             System.out.println("3. Display Products");
-            System.out.println("4. Saved to File");
-            System.out.println("5. Load From the File");
+            System.out.println("4. Save to File");
+            System.out.println("5. Load from the File");
             System.out.println("6. Display GUI");
             System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            int choice = Input.nextInt();
+            Input.nextLine();
 
-            switch (choice) {
+            switch (choice){
+
                 case 1:
-                    addProduct(shoppingManager,shoppingCart, scanner,gui);
-                    gui.updateTable();
+                    System.out.println("Enter the product type (Select 1 for Electronics Select 2 for clothes: )");
+                    Input.nextLine();
+                    int productType = 0;
+
+                    System.out.println("Enter the product ID: ");
+                    String productId = Input.nextLine();
+
+                    System.out.println("Enter the product name: ");
+                    String productName = Input.nextLine();
+
+                    System.out.println("Enter the number of available items: ");
+                    int availableItems = Input.nextInt();
+
+                    System.out.println("Enter the price: ");
+                    double price = Input.nextDouble();
+
+                    if (productType == 1) {
+                        System.out.println("Enter the brand: ");
+                        String brand = Input.nextLine();
+
+
+                        System.out.println("Enter the warranty period (in years): ");
+                        int warrantyPeriod = Input.nextInt();
+
+                        Electronics electronicProduct = new Electronics(productId, productName,availableItems, price,brand,warrantyPeriod);
+                        shoppingManager.addProduct(electronicProduct);
+                        ProductList.add(electronicProduct);
+                        shoppingCart.addProduct(electronicProduct);
+                        //gui.updateElectronicsTable(productId,productName,price,brand,warrantyPeriod);
+
+                    } else if (productType == 2) {
+                        System.out.println("Enter the size: ");
+                        String size = Input.nextLine();
+
+                        System.out.println("Enter the color: ");
+                        String color = Input.nextLine();
+
+                        Clothing clothingProduct = new Clothing(productId, productName,availableItems,price,size,color);
+                        shoppingManager.addProduct(clothingProduct);
+                        ProductList.add(clothingProduct);
+                        shoppingCart.addProduct(clothingProduct);
+                       // gui.updateClothingTable(productId,productName,price,size,color);
+                    }
+                    else {
+                        System.out.println("Invalid product type.");
+                    }
                     break;
+
                 case 2:
-                    removeProduct(shoppingManager,scanner);
-                    gui.updateTable();
+                    System.out.println("Enter the (product ID ) to delete the product: ");
+                    String productIdToDelete = Input.nextLine();
+                    shoppingManager.deleteProduct(productIdToDelete);
                     break;
+
                 case 3:
                     shoppingManager.displayProducts();
                     break;
+
                 case 4:
-                    shoppingManager.SavedToFile();
-                    System.out.println("Products Saved to the file !");
+                    shoppingManager.saveToFile("Saved_Products.txt", ProductList);
                     break;
+
                 case 5:
-                    shoppingManager.loadFromFile();
-                    System.out.println("Load Products From the File !");
-                    break;
+                    List<Product> savedProducts = shoppingManager.readFromFile("Saved_Products.txt");
+                    if (savedProducts != null){
+                        ProductList.addAll(savedProducts);
+                    }
+                    else {
+                        System.out.println("Unable to read products from file");
+                    }
                 case 6:
-                    gui.showGUI();
-                    break;
+
                 case 7:
-                    System.out.println("Exiting the application.");
+                    System.out.println("Exiting the application");
                     System.exit(0);
-                    break;
                 default:
-                    System.out.println("Invalid choice. Please enter a valid option.");
-                    break;
+                    System.out.println("Invalid choice. Please try again.");
+
             }
-        }
-    }
-
-    private static void addProduct(WestminsterShoppingManager shoppingManager, ShoppingCart shoppingCart, Scanner scanner, GUI gui) {
-        System.out.println("Enter product details:");
-        System.out.print("Product ID: ");
-        String ProductId = scanner.nextLine();
-        System.out.print("Product Name: ");
-        String productName = scanner.nextLine();
-        System.out.print("Available Items: ");
-        int Items = scanner.nextInt();
-        System.out.print("Price: ");
-        double price = scanner.nextDouble();
-        scanner.nextLine(); // Consume the newline character
-
-        System.out.println("Choose product type:");
-        System.out.println("1. Electronics");
-        System.out.println("2. Clothing");
-        System.out.print("Enter your choice: ");
-        int productTypeChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
-
-        if (productTypeChoice == 1) {
-            System.out.print("Enter the Brand : ");
-            String Brand = scanner.nextLine();
-            System.out.print("Enter warranty period: ");
-            int warrantyPeriod = scanner.nextInt();
-            shoppingManager.addProduct(new Electronics(Brand, warrantyPeriod, ProductId, productName,Items, price));
-        } else if (productTypeChoice == 2) {
-            System.out.print("Enter the color of the clothes: ");
-            String color = scanner.nextLine();
-            System.out.print("Enter clothing size: ");
-            String Size = scanner.nextLine();
-            shoppingManager.addProduct(new Clothing(Size,color,ProductId ,productName,Items, price));
-        } else {
-            System.out.println("Invalid product type choice.");
 
         }
-        shoppingCart.calculateTotal();
-        gui.updateTable();
 
     }
-    private static void removeProduct (WestminsterShoppingManager shoppingManager, Scanner scanner){
-        System.out.print("Enter the Product ID to remove: ");
-        String productIdRemove = scanner.nextLine();
-        boolean removed = shoppingManager.removeProduct(productIdRemove);
-
-        if (removed){
-            System.out.println("Product with ID : " + " " + productIdRemove + " " + "Removed Successfully !");
-        }
-    }
-
-
-
 }
-
-
-
-
-
-
-

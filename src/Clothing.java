@@ -1,37 +1,36 @@
-public class Clothing extends Product {
-    public String Size;
-    public String Color;
+public class Clothing extends Product{
 
-    public Clothing (String Size, String color, String ProductId , String ProductName, int Items, double price ){
-        super(ProductId, ProductName, Items, price);
-        this.ProductID = ProductId;
-        this.ProductName = ProductName;
-        this.Size = Size;
-        this.Color= color;
-        this.price = price;
-        this.Items = Items;
+    public String size;
+    public String color;
+
+    public Clothing(String Id, String Name,int Items, double price, String size, String color){
+        super(Id, Name, Items, price);
+        this.size = size;
+        this.color = color;
     }
 
     public String getSize() {
-        return Size;
+        return size;
     }
-    public void setSize(String size) {
-        Size = size;
+    public String getColor(){
+        return color;
     }
 
-    public String getColor() {
-        return Color;
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public void setColor(String color) {
-        Color = color;
+        this.color = color;
     }
 
     @Override
-    public String toString() {
-        return "Clothing{" +
-                "Size='" + Size + '\'' +
-                ", Color='" + Color + '\'' +
-                '}';
+    public void displayInfo() {
+        System.out.println("Clothing - Product ID: " + getProductID() +
+                "Name: " + getProductName() +
+                "Available Items: " + getNumItems() +
+                "Price: " + getPrice() +
+                "Size: " + getSize() +
+                "Color: " + getColor());
     }
 }

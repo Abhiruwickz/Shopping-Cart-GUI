@@ -1,39 +1,45 @@
-public class Electronics extends Product {
-    public int warranty;
-    public String Brand;
+public class Electronics extends Product{
 
-    public Electronics (String Brand,int warranty,String ProductId , String ProductName, int Items, double price ){
-        super(ProductId, ProductName, Items, price);
-        this.Brand = Brand;
-        this.warranty = warranty;
-        this.ProductID = ProductId;
-        this.Items = Items;
-        this.ProductName = ProductName;
+    public String brand;
+    public int warrantyPeriod;
 
+    public Electronics (String Id, String Name, int Items, double price, String brand, int warranty){
+        super(Id,Name,Items,price);
+        this.brand = brand;
+        warrantyPeriod = warranty;
     }
-
-
+// Getters
     public String getBrand() {
-        return Brand;
+        return brand;
     }
 
+    public int getWarrantyPeriod() {
+        return warrantyPeriod;
+    }
+// Setters
     public void setBrand(String brand) {
-        Brand = brand;
+        this.brand = brand;
     }
 
-    public int getWarranty() {
-        return warranty;
-    }
-
-    public void setWarranty(int warranty) {
-        this.warranty = warranty;
+    public void setWarrantyPeriod(int warrantyPeriod) {
+        this.warrantyPeriod = warrantyPeriod;
     }
 
     @Override
-    public String toString() {
-        return "Electronics{" +
-                "warranty=" + warranty +
-                ", Brand='" + Brand + '\'' +
-                '}';
+    public void displayInfo() {
+        System.out.println("Electronics - Product ID" + getProductID() +
+                "Name:" + getProductName() +
+                "Available Items: " + getNumItems() +
+                "Price: $" + getPrice() +
+                "Brand: "+ getBrand() +
+                "Warranty: "+ getWarrantyPeriod() + "years ");
+
+
+
+    }
+
+    @Override
+    public boolean isElectronics(){
+        return true;
     }
 }

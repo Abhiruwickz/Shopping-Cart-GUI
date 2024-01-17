@@ -3,44 +3,43 @@ import java.util.List;
 
 public class ShoppingCart {
 
-    private List<Product> products;
-
-
-
-    public ShoppingCart (){
+    public ArrayList <Product> products;
+    public ShoppingCart(){
         this.products = new ArrayList<>();
     }
-
-    public ShoppingCart(WestminsterShoppingManager shoppingManager, java.awt.List productList) {
+    public void addProduct (Product product){
+        products.add(product);
+        System.out.println(product.getProductName() + "Product Added to the shopping cart!");
     }
 
-    // Method to add a product to the shopping cart
-    public void addProduct(Product product){
-        this.products.add(product);
-    }
-    // Method to remove a product from the shopping cart
-    public void removeProduct (Product product){
-        this.products.remove(product);
-    }
-    // Method to calculate the total price of products in the shopping cart
-     public double calculateTotal() {
-        double total = 0;
-        for (Product product : products) {
-            total += product.getPrice();
+    public void removeProduct (String productName){
+        for (Product product : products){
+            if (product.getProductName().equals(productName)){
+                products.remove(product);
+                System.out.println(productName + "Removed from shopping cart!");
+                return;
+            }
         }
-        System.out.println("Total Price: " + total);
-        return total;
+        System.out.println(productName + "is not in the shopping cart!");
     }
-
-    public List<Product> getProducts() {
+    public List <Product>getProducts(){
         return products;
     }
+    public double total(){
+        double totalAmount = 0;
+        for (Product product : products){
+            totalAmount +=product.getPrice();
 
-
-
-    public void addObserver(GUI gui) {
+        }
+        return totalAmount;
     }
+    private boolean isFirstPurchase = true;
 
-    public void removeObserver(GUI gui) {
+    public double calculateFirstPurchaseDiscount(double total){
+        if (isFirstPurchase){
+            isFirstPurchase = false;
+            return total * 0.1;
+        }
+        return 0;
     }
 }

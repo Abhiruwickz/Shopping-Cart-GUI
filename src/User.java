@@ -1,25 +1,27 @@
 public class User {
-    public String Password;
-    public String userName;
 
-    public User (String Password, String userName){
-        this.Password = Password;
-        this.userName = userName;
+    public String username;
+    public String password;
+
+    public User (String username, String password){
+        this.username = username;
+        this.password = password;
     }
-
+// Getters
     public String getPassword() {
-        return Password;
+        return password;
     }
 
+    public String getUsername() {
+        return username;
+    }
+// Setters
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 }

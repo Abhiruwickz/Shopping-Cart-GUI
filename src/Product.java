@@ -1,60 +1,50 @@
-public abstract class Product {
-    protected String ProductID;
-    protected String ProductName;
-    protected int Items;
+public abstract class Product{
+    protected String productID;
+    protected String productName;
+    protected int numItems;
     protected double price;
 
-  public Product(String ProductId , String ProductName, int Items, double price ) {
-      this.ProductID = ProductId;
-      this.ProductName = ProductName;
-      this.Items= Items;
-      this.price = price;
-
-  }
-
-    public Product() {
-
+    public Product (String Id, String Name, int Items, double price){
+        productID = Id;
+        productName = Name;
+        numItems = Items;
+        this.price = price;
     }
-
+// Getters
     public String getProductID() {
-        return ProductID;
-    }
-
-    public void setProductID(String productID) {
-        ProductID = productID;
+        return productID;
     }
 
     public String getProductName() {
-        return ProductName;
+        return productName;
     }
 
-    public void setProductName(String productName) {
-        ProductName = productName;
-    }
-
-    public int getItems() {
-        return Items;
-    }
-
-    public void setItems(int items) {
-        Items = items;
+    public int getNumItems() {
+        return numItems;
     }
 
     public double getPrice() {
         return price;
     }
+// Setters
+    public void setProductID(String productID) {
+        this.productID = productID;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setNumItems(int numItems) {
+        this.numItems = numItems;
+    }
 
     public void setPrice(double price) {
         this.price = price;
     }
+    public abstract void displayInfo();
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "ProductID='" + ProductID + '\'' +
-                ", ProductName='" + ProductName + '\'' +
-                ", Items=" + Items +
-                ", price=" + price +
-                '}';
+    public boolean isElectronics() {
+        return false;
     }
 }
