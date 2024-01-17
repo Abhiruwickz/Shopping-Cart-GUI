@@ -6,7 +6,7 @@ public class Main {
         ShoppingCart shoppingCart = new ShoppingCart();
         WestminsterShoppingManager shoppingManager = new WestminsterShoppingManager();
 
-        //GUI gui = new GUI();
+        GUI gui = new GUI();
 
         List<Product>ProductList = new ArrayList<>();
 
@@ -29,9 +29,9 @@ public class Main {
             switch (choice){
 
                 case 1:
-                    System.out.println("Enter the product type (Select 1 for Electronics Select 2 for clothes: )");
-                    Input.nextLine();
-                    int productType = 0;
+                    System.out.println("Enter the product type (Select 1 for Electronics  Select 2 for Clothes): ");
+                    int productType = Input.nextInt();
+                    Input.nextLine(); // Consume newline
 
                     System.out.println("Enter the product ID: ");
                     String productId = Input.nextLine();
@@ -44,72 +44,68 @@ public class Main {
 
                     System.out.println("Enter the price: ");
                     double price = Input.nextDouble();
+                    Input.nextLine(); // Consume newline
 
+                    // Create product based on user inputs
                     if (productType == 1) {
                         System.out.println("Enter the brand: ");
                         String brand = Input.nextLine();
 
-
                         System.out.println("Enter the warranty period (in years): ");
                         int warrantyPeriod = Input.nextInt();
 
-                        Electronics electronicProduct = new Electronics(productId, productName,availableItems, price,brand,warrantyPeriod);
+                        Electronics electronicProduct = new Electronics(productId, productName, availableItems, price, brand, warrantyPeriod);
                         shoppingManager.addProduct(electronicProduct);
                         ProductList.add(electronicProduct);
                         shoppingCart.addProduct(electronicProduct);
-                        //gui.updateElectronicsTable(productId,productName,price,brand,warrantyPeriod);
-
+//
+                       gui.updateElectronicsTable(productId, productName, price, brand, warrantyPeriod);
                     } else if (productType == 2) {
-                        System.out.println("Enter the size: ");
+                        System.out.println("Enter the size:");
                         String size = Input.nextLine();
 
-                        System.out.println("Enter the color: ");
+                        System.out.println("Enter the color:");
                         String color = Input.nextLine();
 
-                        Clothing clothingProduct = new Clothing(productId, productName,availableItems,price,size,color);
+                        Clothing clothingProduct = new Clothing(productId, productName, availableItems, price, size, color);
                         shoppingManager.addProduct(clothingProduct);
                         ProductList.add(clothingProduct);
                         shoppingCart.addProduct(clothingProduct);
-                       // gui.updateClothingTable(productId,productName,price,size,color);
-                    }
-                    else {
+
+                       gui.updateClothingTable(productId, productName, price, size, color);
+                    } else {
                         System.out.println("Invalid product type.");
                     }
                     break;
-
                 case 2:
-                    System.out.println("Enter the (product ID ) to delete the product: ");
+                    System.out.println("Enter the product ID to delete:");
                     String productIdToDelete = Input.nextLine();
                     shoppingManager.deleteProduct(productIdToDelete);
                     break;
-
                 case 3:
                     shoppingManager.displayProducts();
                     break;
-
                 case 4:
                     shoppingManager.saveToFile("Saved_Products.txt", ProductList);
+                    System.out.println("Products saved to file.");
                     break;
-
                 case 5:
                     List<Product> savedProducts = shoppingManager.readFromFile("Saved_Products.txt");
-                    if (savedProducts != null){
+                    if (savedProducts != null) {
                         ProductList.addAll(savedProducts);
+                        System.out.println("Products read from file.");
+                    } else {
+                        System.out.println("Unable to read products from file.");
                     }
-                    else {
-                        System.out.println("Unable to read products from file");
-                    }
+                    break;
                 case 6:
-
                 case 7:
                     System.out.println("Exiting the application");
                     System.exit(0);
                 default:
                     System.out.println("Invalid choice. Please try again.");
-
             }
 
         }
-
     }
 }

@@ -1,13 +1,14 @@
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
-public class GUI extends ShoppingCart  {
+public class GUI extends ShoppingCart {
     private JPanel detailsPanel;
     private JTextArea detailsTextArea;
     private JFrame frame;
@@ -15,18 +16,15 @@ public class GUI extends ShoppingCart  {
     private DefaultTableModel model;
     private ShoppingCart shoppingCart;
 
-    // Constructor accepting a ShoppingCart instance
-    public GUI(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-        intializeGUI();
-    }
-        private void intializeGUI (){
+    public GUI() {
+        shoppingCart = new ShoppingCart();
         frame = new JFrame();
-        frame.setSize(800, 600);
+        frame.setSize(500, 550);
         frame.setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Westminster Shopping Cart", SwingConstants.CENTER);
         frame.add(titleLabel, BorderLayout.NORTH);
+
 
         String[] categories = {"All", "Electronics", "Clothing"};
         JComboBox<String> categoryComboBox = new JComboBox<>(categories);
@@ -36,8 +34,7 @@ public class GUI extends ShoppingCart  {
         categoryPanel.add(categoryLabel);
         categoryPanel.add(categoryComboBox);
 
-        //Cart Button
-
+        //      Shopping cart button
         JButton shoppingCartButton = new JButton("Shopping Cart");
         shoppingCartButton.addActionListener(new ActionListener() {
             @Override
@@ -50,7 +47,9 @@ public class GUI extends ShoppingCart  {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(categoryPanel, BorderLayout.NORTH);
 
-        // Initialize table with default data
+        // ... (other components setup)
+
+        // Initialize Gui product table with default data
         String column[] = {"Product ID", "Name", "Category", "Price", "Info"};
         String data[][] = {
 
@@ -68,13 +67,14 @@ public class GUI extends ShoppingCart  {
 
         frame.add(topPanel, BorderLayout.CENTER);
 
+        // Displaying user selections and details
         detailsPanel = new JPanel(new BorderLayout());
         detailsTextArea = new JTextArea(10, 30);
         detailsTextArea.setEditable(false);
         JScrollPane detailsScrollPane = new JScrollPane(detailsTextArea);
         detailsPanel.add(detailsScrollPane, BorderLayout.CENTER);
 
-        //Add to cart button
+        // Add to cart button
         JButton addToCartButton = new JButton("Add to Shopping Cart");
         addToCartButton.addActionListener(new ActionListener() {
             @Override
@@ -84,21 +84,17 @@ public class GUI extends ShoppingCart  {
                     String category = (String) table.getValueAt(selectedRow, 2);
                     String productName = (String) table.getValueAt(selectedRow, 1);
                     double productPrice = Double.parseDouble(table.getValueAt(selectedRow, 3).toString());
-                    if (category.equals("Electronics")){
-                        Electronics electronic = new Electronics("Brand", 1,"ID",productName,12,productPrice);
-                        shoppingCart.addProduct(electronic);
+
+                    if (category.equals("Electronics")) {
+                        Electronics elecproduct = new Electronics("ID", productName, 1, productPrice, "Brand", 12);
+                        shoppingCart.addProduct(elecproduct);
                     } else if (category.equals("Clothing")) {
-                        Clothing clothingP = new Clothing("Large","White","ID",productName,10,productPrice);
-                        shoppingCart.addProduct(clothingP);
-                    }
-                    else {
-                        System.out.println("Invalid Category");
+                        Clothing clothproduct = new Clothing("ID", productName, 1, productPrice, "Medium", "Blue");
+                        shoppingCart.addProduct(clothproduct);
+                    } else {
+                        System.out.println("Invalid category.");
                         return;
                     }
-                    // Use the ShoppingCart instance
-                    // For example:
-                    // shoppingCart.addProduct(new Product(productName, productPrice));
-                    // Update the shopping cart and UI accordingly
                 } else {
                     System.out.println("No row selected.");
                 }
@@ -115,7 +111,7 @@ public class GUI extends ShoppingCart  {
 
         detailsPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add listeners for table row selection
+        // Add listeners for raw selection in the table
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -143,107 +139,106 @@ public class GUI extends ShoppingCart  {
 
         frame.add(detailsPanel, BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setVisible(true);
     }
-    public void showGUI(){
-            frame.setVisible(true);
-        }
 
-
-    public void displayShoppingCart() {
+    private void displayShoppingCart() {
         JFrame cartFrame = new JFrame("Shopping Cart");
-        cartFrame.setSize(600,400);
+        cartFrame.setSize(600, 400);
 
-        String [] cartColumn = {"Product" , "Quantity" , "Price"};
-        DefaultTableModel cartModel = new DefaultTableModel(cartColumn,0);
+        String[] cartColumns = {"Product", "Quantity", "Price"};
+        DefaultTableModel cartModel = new DefaultTableModel(cartColumns, 0);
 
-        double Total = 0;
+        double total = 0;
 
-        // count purchases by category
-        int electronicCount = 0;
-        int ClothingPCount = 0;
+        // Count the purchase for each category
+        int electronicsCount = 0;
+        int clothingCount = 0;
 
-        // Get product from shopping cart and table populate
-        for (Product product : shoppingCart.getProducts()){
-            int NumItems = product.getItems();
+        // Get products from ShoppingCart and updating the table
+        for (Product product : shoppingCart.getProducts()) {
+            int quantity = product.getNumItems();
             double price = product.getPrice();
-            double subTotal = price * NumItems;
-            Total += subTotal;
+            double subtotal = price * quantity;
+            total += subtotal;
 
-            if (product instanceof Electronics){
-                electronicCount += NumItems;
+            if (product instanceof Electronics) {
+                electronicsCount += quantity;
+            } else if (product instanceof Clothing) {
+                clothingCount += quantity;
             }
-            else if (product instanceof Clothing){
-                ClothingPCount += NumItems;
-            }
-            cartModel.addRow(new Object[]{product.getProductName(),NumItems,price});
+
+            cartModel.addRow(new Object[]{product.getProductName(), quantity, price});
         }
+
+        // Total discount calculation based on purchases
+        double firstPurchaseDiscount = shoppingCart.calculateFirstPurchaseDiscount(total);
+        double threeItemsDiscount = 0;
+
+        // Calculate the 20% discount
+        if (electronicsCount >= 3 || clothingCount >= 3) {
+            threeItemsDiscount = total * 0.2;
+        }
+
+        // After applying discounts updated the table
+        double finalTotal = total - firstPurchaseDiscount - threeItemsDiscount;
+
+        JLabel firstPurchaseDiscountLabel = new JLabel("First Purchase Discount (10%): " + firstPurchaseDiscount, SwingConstants.CENTER);
+        JLabel threeItemsDiscountLabel = new JLabel("Three Items in same Category Discount (20%): " + threeItemsDiscount, SwingConstants.CENTER);
+        JLabel finalTotalLabel = new JLabel("Final amount: " + finalTotal, SwingConstants.CENTER);
+
+        JPanel discountPanel = new JPanel(new GridLayout(3, 1));
+        discountPanel.add(firstPurchaseDiscountLabel);
+        discountPanel.add(threeItemsDiscountLabel);
+        discountPanel.add(finalTotalLabel);
+
+        JScrollPane cartScrollPane = new JScrollPane(new JTable(cartModel));
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(cartScrollPane, BorderLayout.CENTER);
+        mainPanel.add(discountPanel, BorderLayout.SOUTH);
+
+        cartFrame.add(mainPanel);
         cartFrame.setVisible(true);
-
     }
-     public void updateTable(){
-         model.setRowCount(0);  // Clear the existing table data
 
-         // Update the table with products from the shopping cart
-         for (Product product : shoppingCart.getProducts()) {
-             int NumItems = product.getItems();
-             double price = product.getPrice();
-             String category = product instanceof Electronics ? "Electronics" : "Clothing";
+    // Helper method to get the quantity of a specific product in the cart
+    private int getQuantityInCart(Product product) {
+        int quantityInCart = 0;
+        for (Product p : shoppingCart.getProducts()) {
+            if (p.equals(product)) {
+                quantityInCart++;
+            }
+        }
+        return quantityInCart;
+    }
 
-             // Highlight items with reduced availability in red
-             Object[] rowData = new Object[]{product.getProductID(), product.getProductName(), category, price, NumItems};
-             model.addRow(rowData);
+    // Method to update table for Electronics products
+    public void updateElectronicsTable(String productId, String productName, double price, String brand, int warrantyPeriod) {
+        model.addRow(new Object[]{productId, productName, "Electronics", price, brand + ", " + warrantyPeriod + " years warranty"});
+    }
 
-             // Customize cell rendering for the "Quantity" column
-             int quantityColumn = 4;  // Assuming the "Quantity" column is the fifth column (index 4)
-             TableCellRenderer renderer = new DefaultTableCellRenderer() {
-                 @Override
-                 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                     Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    // Method to update table for Clothing products
+    public void updateClothingTable(String productId, String productName, double price, String size, String color) {
+        model.addRow(new Object[]{productId, productName, "Clothing", price, size + ", " + color});
+    }
 
-                     // Highlight items with reduced availability in red
-                     if (column == quantityColumn && NumItems < 3) {
-                         component.setForeground(Color.RED);
-                     } else {
-                         component.setForeground(table.getForeground());
-                     }
-
-                     return component;
-                 }
-             };
-
-             table.getColumnModel().getColumn(quantityColumn).setCellRenderer(renderer);
-         }
-     }
+    // Method to filter the table by category
     private void filterTableByCategory(String category) {
-        TableRowSorter <TableModel> sorter = new TableRowSorter<>(table.getModel());
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
         table.setRowSorter(sorter);
 
-        if (!category.equals("All")){
+        if (!category.equals("All")) {
             RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
                 @Override
-                public boolean include(Entry<?, ? extends Object> entry) {
+                public boolean include(Entry<?, ?> entry) {
                     String entryCategory = entry.getValue(2).toString();
                     return entryCategory.equals(category);
                 }
             };
             sorter.setRowFilter(filter);
-        }else {
+        } else {
             sorter.setRowFilter(null);
         }
-
-    }
-
-    // Helper method to update table for Electronics products
-    public void updateElectronicsTable(String productId, String productName, double price, String brand, int warrantyPeriod) {
-        model.addRow(new Object[]{productId, productName, "Electronics", price, brand + ", " + warrantyPeriod + " years warranty"});
-    }
-
-    // Helper method to update table for Clothing products
-    public void updateClothingTable(String productId, String productName, double price, String size, String color) {
-        model.addRow(new Object[]{productId, productName, "Clothing", price, size + ", " + color});
     }
 }
-
-
-
